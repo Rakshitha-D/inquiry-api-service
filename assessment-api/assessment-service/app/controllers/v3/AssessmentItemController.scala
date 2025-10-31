@@ -1,13 +1,13 @@
 package controllers.v3
 
-import akka.actor.{ActorRef, ActorSystem}
+import org.apache.pekko.actor.{ActorRef, ActorSystem}
 import com.google.inject.Singleton
 import controllers.BaseController
 import javax.inject.{Inject, Named}
 import play.api.mvc.ControllerComponents
 import utils.{ActorNames, ApiId, AssessmentItemOperations}
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.concurrent.ExecutionContext
 
 @Singleton
@@ -59,11 +59,4 @@ class AssessmentItemController @Inject()(@Named(ActorNames.ASSESSMENT_ITEM_ACTOR
     getResult(ApiId.RETIRE_ASSESSMENT_ITEM, assessmentItemActor, assessmentItemRequest)
   }
 
-  def search() = Action.async { implicit request =>
-    val headers = commonHeaders()
-    val body = requestBody()
-    val searchRequest = getRequest(body, headers, AssessmentItemOperations.searchItem.toString)
-    setRequestContext(searchRequest, version, objectType, schemaName)
-    getResult(ApiId.SEARCH_ASSESSMENT_ITEM, assessmentItemActor, searchRequest)
-  }
 }
