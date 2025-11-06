@@ -127,7 +127,12 @@ object AssessmentItemValidator {
       errorMessages += s"item $lhsOptions is missing."
     } else {
       Try {
-        val values = JavaJsonUtils.deserialize[java.util.List[java.util.Map[String, Object]]](assessmentItem.get(lhsOptions).toString)
+        val lhsRaw = assessmentItem.get(lhsOptions)
+        val values = if (lhsRaw.isInstanceOf[util.List[_]]) {
+          lhsRaw.asInstanceOf[java.util.List[java.util.Map[String, Object]]]
+        } else {
+          JavaJsonUtils.deserialize[java.util.List[java.util.Map[String, Object]]](lhsRaw.toString)
+        }
         val option1 = scala.collection.mutable.ListBuffer[Object]()
         
         values.asScala.zipWithIndex.foreach { case (value, index) =>
@@ -153,7 +158,12 @@ object AssessmentItemValidator {
       errorMessages += s"item $rhsOptions is missing."
     } else {
       Try {
-        val values = JavaJsonUtils.deserialize[java.util.List[java.util.Map[String, Object]]](assessmentItem.get(rhsOptions).toString)
+        val rhsRaw = assessmentItem.get(rhsOptions)
+        val values = if (rhsRaw.isInstanceOf[util.List[_]]) {
+          rhsRaw.asInstanceOf[java.util.List[java.util.Map[String, Object]]]
+        } else {
+          JavaJsonUtils.deserialize[java.util.List[java.util.Map[String, Object]]](rhsRaw.toString)
+        }
         values.asScala.foreach { value =>
           rhsKeys.foreach { key =>
             if (!value.containsKey(key)) {
