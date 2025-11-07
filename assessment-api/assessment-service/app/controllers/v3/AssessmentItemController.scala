@@ -35,6 +35,8 @@ class AssessmentItemController @Inject()(@Named(ActorNames.ASSESSMENT_ITEM_ACTOR
     assessmentItem.putAll(Map("identifier" -> identifier, "fields" -> fieldList).asJava)
     val assessmentItemRequest = getRequest(assessmentItem, headers, AssessmentItemOperations.readItem.toString)
     setRequestContext(assessmentItemRequest, version, objectType, schemaName)
+    assessmentItemRequest.put("identifier", identifier)
+    assessmentItemRequest.put("fields", fieldList)
     getResult(ApiId.READ_ASSESSMENT_ITEM, assessmentItemActor, assessmentItemRequest)
   }
 
