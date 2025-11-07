@@ -59,6 +59,7 @@ class AssessmentItemActor @Inject()(implicit oec: OntologyEngineContext) extends
       }
       
       val metadata: util.Map[String, AnyRef] = NodeUtil.serialize(node, fields, node.getObjectType.toLowerCase.replace("image", ""), request.getContext.get("version").asInstanceOf[String]) 
+      logger.info("metadata: {}", metadata)
       metadata.put("identifier", node.getIdentifier.replace(".img", ""))
       ResponseHandler.OK.put("assessment_item", metadata)
     })
