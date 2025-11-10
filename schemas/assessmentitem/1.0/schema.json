@@ -118,12 +118,14 @@
       "dataType": "object"
     },
     "lhs_options": {
+      "type": "array",
       "dataType": "array",
       "items": {
         "type": "object"
       }
     },
     "rhs_options": {
+      "type": "array",
       "dataType": "array",
       "items": {
         "type": "object"
