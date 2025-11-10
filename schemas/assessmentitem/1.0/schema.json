@@ -118,15 +118,37 @@
       "dataType": "object"
     },
     "lhs_options": {
-      "type": "array",
-      "dataType": "array",
-      "items": {
-        "type": "object"
-      }
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          }
+        }
+      ]
     },
     "rhs_options": {
-      "type": "array",
-      "dataType": "array",
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          }
+        }
+      ]
+    },
       "items": {
         "type": "object"
       }
