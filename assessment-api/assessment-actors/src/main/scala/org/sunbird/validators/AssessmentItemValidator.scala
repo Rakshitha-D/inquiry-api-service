@@ -126,7 +126,22 @@ object AssessmentItemValidator {
     def parseOptions(opt: AnyRef): java.util.List[java.util.Map[String, Object]] = {
       opt match {
         case l: java.util.List[_] => l.asInstanceOf[java.util.List[java.util.Map[String, Object]]]
-        case s: String => JavaJsonUtils.deserialize[java.util.List[java.util.Map[String, Object]]](s)
+        case m: java.util.Map[_, _] => 
+          val list = new java.util.ArrayList[java.util.Map[String, Object]]()
+          m.asScala.foreach { case (_, value) => 
+            list.add(value.asInstanceOf[java.util.Map[String, Object]])
+          }
+          list
+        case s: String => 
+          try {
+            JavaJsonUtils.deserialize[java.util.List[java.util.Map[String, Object]]](s)
+          } catch {
+            case _: Exception => 
+              val map = JavaJsonUtils.deserialize[java.util.Map[String, Object]](s)
+              val list = new java.util.ArrayList[java.util.Map[String, Object]]()
+              map.values().forEach(value => list.add(value.asInstanceOf[java.util.Map[String, Object]]))
+              list
+          }
         case _ => null
       }
     }
