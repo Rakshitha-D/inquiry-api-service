@@ -118,10 +118,16 @@
       "dataType": "object"
     },
     "lhs_options": {
-      "dataType": "object"
+      "dataType": "array",
+      "items": {
+        "type": "object"
+      }
     },
     "rhs_options": {
-      "dataType": "object"
+      "dataType": "array",
+      "items": {
+        "type": "object"
+      }
     },
     "responses": {
       "type": "object"
