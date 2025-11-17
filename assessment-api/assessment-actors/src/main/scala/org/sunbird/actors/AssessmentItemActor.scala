@@ -42,17 +42,8 @@ class AssessmentItemActor @Inject()(implicit oec: OntologyEngineContext) extends
     AssessmentItemUtils.replaceMediaItemsWithVariants(metadata)
     AssessmentItemUtils.flattenMetadataToRequest(request, metadata)
     if (!skipValidation) AssessmentItemValidator.validateAssessmentItemRequest(requestData, "ASSESSMENT_ITEM_CREATE")
-    // Create the node, then persist node_id metadata equal to the identifier (without ".img").
-    DataNode.create(request).flatMap { node =>
-      val id = node.getIdentifier.replace(".img", "")
-      // Prepare an update request to add node_id to metadata
-      val updateRequest = new Request(request)
-      val updateMetadata: util.Map[String, AnyRef] = Map("node_id" -> id.asInstanceOf[AnyRef]).asJava
-      updateRequest.put("metadata", updateMetadata)
-      // Persist the node_id field and return response using the updated node's versionKey
-      DataNode.update(updateRequest).map { updatedNode =>
-        ResponseHandler.OK.putAll(Map("identifier" -> id, "versionKey" -> updatedNode.getMetadata.get("versionKey")).asJava)
-      }
+    DataNode.create(request).map { node =>
+      ResponseHandler.OK.putAll(Map("identifier" -> node.getIdentifier.replace(".img", ""), "node_id" -> node.getIdentifier.replace(".img", ""), "versionKey" -> node.getMetadata.get("versionKey")).asJava)
     }
   }
 
@@ -115,7 +106,7 @@ class AssessmentItemActor @Inject()(implicit oec: OntologyEngineContext) extends
       val updateRequest = new Request(request)
       val identifiers = java.util.Arrays.asList(identifier, identifier + ".img")
       updateRequest.put("identifiers", identifiers)
-      val date = Platform.getString("date.format", java.time.format.DateTimeFormatter.ISO_INSTANT.format(java.time.Instant.now()))
+      val date = DateUtils.formatCurrentDate
       val updateMetadata: util.Map[String, AnyRef] = Map(
         "prevStatus" -> node.getMetadata.get("status"),
         "status" -> "Retired",
