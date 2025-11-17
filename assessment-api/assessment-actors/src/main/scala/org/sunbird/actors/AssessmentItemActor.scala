@@ -51,7 +51,7 @@ class AssessmentItemActor @Inject()(implicit oec: OntologyEngineContext) extends
       DataNode.create(request).flatMap { node =>
         val id = node.getIdentifier.replace(".img", "")
         val updateRequest = new Request(request)
-        val updateMetadata: util.Map[String, AnyRef] = Map("node_id" -> id).asJava
+        val updateMetadata: util.Map[String, AnyRef] = Map("node_id" -> id.asInstanceOf[AnyRef]).asJava
         updateRequest.put("identifier", node.getIdentifier)
         updateRequest.put("metadata", updateMetadata)
         DataNode.update(updateRequest).map { updatedNode =>
