@@ -42,24 +42,17 @@ class AssessmentItemActor @Inject()(implicit oec: OntologyEngineContext) extends
     AssessmentItemUtils.replaceMediaItemsWithVariants(metadata)
     AssessmentItemUtils.flattenMetadataToRequest(request, metadata)
     if (!skipValidation) AssessmentItemValidator.validateAssessmentItemRequest(requestData, "ASSESSMENT_ITEM_CREATE")
-    val providedIdOpt = Option(requestData.get("identifier")).map(_.asInstanceOf[String]).filter(StringUtils.isNotBlank)
-    if (providedIdOpt.isDefined) {
-      val id = providedIdOpt.get
-      metadata.put("node_id", id)
-      requestData.put("identifier", id)
-      AssessmentItemUtils.flattenMetadataToRequest(request, metadata) // if needed
-      DataNode.create(request).flatMap { node =>
-        val id = node.getIdentifier.replace(".img", "")
-        val updateRequest = new Request(request)
-        val updateMetadata: util.Map[String, AnyRef] = Map("node_id" -> id.asInstanceOf[AnyRef]).asJava
-        updateRequest.put("identifier", node.getIdentifier)
-        updateRequest.put("metadata", updateMetadata)
-        DataNode.update(updateRequest).map { updatedNode =>
-          ResponseHandler.OK.putAll(Map("identifier" -> id, "versionKey" -> updatedNode.getMetadata.get("versionKey")).asJava)
-        }
+    // Create the node, then persist node_id metadata equal to the identifier (without ".img").
+    DataNode.create(request).flatMap { node =>
+      val id = node.getIdentifier.replace(".img", "")
+      // Prepare an update request to add node_id to metadata
+      val updateRequest = new Request(request)
+      val updateMetadata: util.Map[String, AnyRef] = Map("node_id" -> id.asInstanceOf[AnyRef]).asJava
+      updateRequest.put("metadata", updateMetadata)
+      // Persist the node_id field and return response using the updated node's versionKey
+      DataNode.update(updateRequest).map { updatedNode =>
+        ResponseHandler.OK.putAll(Map("identifier" -> id, "versionKey" -> updatedNode.getMetadata.get("versionKey")).asJava)
       }
-    } else {
-      Future.failed(new ClientException("ERR_ASSESSMENT_ITEM_CREATE", "Identifier is required to create an assessment item"))
     }
   }
 
