@@ -48,8 +48,15 @@ class AssessmentItemActor @Inject()(implicit oec: OntologyEngineContext) extends
       metadata.put("node_id", id)
       requestData.put("identifier", id)
       AssessmentItemUtils.flattenMetadataToRequest(request, metadata) // if needed
-      DataNode.create(request).map { node =>
-        ResponseHandler.OK.putAll(Map("identifier" -> id, "versionKey" -> node.getMetadata.get("versionKey")).asJava)
+      DataNode.create(request).flatMap { node =>
+        val id = node.getIdentifier.replace(".img", "")
+        val updateRequest = new Request(request)
+        val updateMetadata: util.Map[String, AnyRef] = Map("node_id" -> id).asJava
+        updateRequest.put("identifier", node.getIdentifier)
+        updateRequest.put("metadata", updateMetadata)
+        DataNode.update(updateRequest).map { updatedNode =>
+          ResponseHandler.OK.putAll(Map("identifier" -> id, "versionKey" -> updatedNode.getMetadata.get("versionKey")).asJava)
+        }
       }
     } else {
       Future.failed(new ClientException("ERR_ASSESSMENT_ITEM_CREATE", "Identifier is required to create an assessment item"))
