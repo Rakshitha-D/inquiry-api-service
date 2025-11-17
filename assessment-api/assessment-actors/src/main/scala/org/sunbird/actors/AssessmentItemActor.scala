@@ -41,8 +41,17 @@ class AssessmentItemActor @Inject()(implicit oec: OntologyEngineContext) extends
     AssessmentItemUtils.replaceMediaItemsWithVariants(metadata)
     AssessmentItemUtils.flattenMetadataToRequest(request, metadata)
     if (!skipValidation) AssessmentItemValidator.validateAssessmentItemRequest(requestData, "ASSESSMENT_ITEM_CREATE")
-    DataNode.create(request).map { node =>
-      ResponseHandler.OK.putAll(Map("identifier" -> node.getIdentifier.replace(".img", ""), "node_id" -> node.getIdentifier.replace(".img", ""), "versionKey" -> node.getMetadata.get("versionKey")).asJava)
+    val providedIdOpt = Option(requestData.get("identifier")).map(_.asInstanceOf[String]).filter(StringUtils.isNotBlank)
+    if (providedIdOpt.isDefined) {
+      val id = providedIdOpt.get
+      metadata.put("node_id", id)
+      requestData.put("identifier", id)
+      AssessmentItemUtils.flattenMetadataToRequest(request, metadata) // if needed
+      DataNode.create(request).map { node =>
+        ResponseHandler.OK.putAll(Map("identifier" -> id, "versionKey" -> node.getMetadata.get("versionKey")).asJava)
+      }
+    } else {
+      Future.failed(new ClientException("ERR_ASSESSMENT_ITEM_CREATE", "Identifier is required to create an assessment item"))
     }
   }
 
