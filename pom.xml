@@ -24,8 +24,8 @@
 		<dependencies>
 			<dependency>
 				<groupId>com.yugabyte</groupId>
-				<artifactId>yb-cassandra-driver-core</artifactId>
-				<version>3.11.2-yb-17</version>
+				<artifactId>cassandra-driver-core</artifactId>
+				<version>3.10.3-yb-2</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
