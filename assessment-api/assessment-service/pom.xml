@@ -189,7 +189,7 @@
         <dependency>
             <groupId>com.yugabyte</groupId>
             <artifactId>cassandra-driver-core</artifactId>
-            <version>3.10.3-yb-2</version>
+            <version>4.15.0-yb-5</version>
         </dependency>
     </dependencies>
     <build>
