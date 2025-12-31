@@ -147,6 +147,10 @@
                     <artifactId>slf4j-log4j12</artifactId>
                     <groupId>org.slf4j</groupId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.datastax.cassandra</groupId>
+                    <artifactId>cassandra-driver-core</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -176,6 +180,11 @@
             <groupId>com.github.danielwegener</groupId>
             <artifactId>logback-kafka-appender</artifactId>
             <version>0.2.0-RC2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.yugabyte</groupId>
+            <artifactId>yb-cassandra-driver-core</artifactId>
+            <version>3.11.2-yb-17</version>
         </dependency>
     </dependencies>
     <build>
