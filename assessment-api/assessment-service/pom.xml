@@ -188,7 +188,7 @@
         </dependency>
         <dependency>
             <groupId>com.yugabyte</groupId>
-            <artifactId>cassandra-driver-core</artifactId>
+            <artifactId>java-driver-core</artifactId>
             <version>4.15.0-yb-1</version>
         </dependency>
     </dependencies>
