@@ -17,6 +17,11 @@
             <url>https://repo1.maven.org/maven2/</url>
         </repository>
         <repository>
+            <id>yugabyte</id>
+            <name>Yugabyte Maven Repository</name>
+            <url>https://repository.yugabyte.com/maven</url>
+        </repository>
+        <repository>
             <id>play-releases</id>
             <url>https://repo.playframework.com/</url>
         </repository>
